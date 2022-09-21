@@ -5,8 +5,15 @@ use strict;
 use warnings;
 
 use Text::CSV_XS qw(csv);
+use Template;
+
 use Data::Dumper;
 use Carp;
+
+my $tt = Template->new({
+    INCLUDE_PATH => '/./tt',
+    #INTERPOLATE  => 1,
+}) || die "$Template::ERROR\n";
 
 my $csv = Text::CSV_XS->new ({ binary => 1, auto_diag => 1 });
 open my $fh, "<:encoding(utf8)", "deep.csv" or croak "deep.csv: $!";
@@ -22,16 +29,27 @@ while (my $row = $csv->getline ($fh)) {
             say $fout '</TABLE>';
             close $fout;
         }
-         $lineup = $row->[0];
-        warn 'html/' . $lineup . '.html'; sleep(5);
-        open $fout, '>','html/' . $lineup . '.html' or croak 'Cannot write';
+        $lineup = $row->[0];
+        warn 'html/' . $lineup . '.html'; 
+        my $fname = 'html/' . $lineup . '.html';
+        open $fout, '>', $fname 
+             || croak "Can't open";
+        warn $fout;
         say $fout '<TABLE>';
+        warn "abled";
     } else {
-        my $video = $row->[2];
-        my $url   = $row->[[5];
-        say $fout '<TR><TD><A HREF=' . $video . '</TD></TR>';
-        warn $video;
+        warn $row->[2];
+        my $vars = {
+            title => $row->[2],
+            url   => $row->[5],
+            image => "",
+        };  
+        my $out;
+        $tt->process('row.tt', $vars, \$out)
+            || croak $tt->error(), "\n";
+        say $fout $out;
     }
 }
+
 
 sleep(30);

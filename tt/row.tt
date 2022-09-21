@@ -1,0 +1,4 @@
+    <TR>
+        <TD><IMG SRC="[% image %]"></TD>
+        <TD><A HREF="[% url %]">[% title %]</A></TD>
+    </TR>
