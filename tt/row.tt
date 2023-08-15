@@ -1,4 +1,6 @@
-    <TR>
-        <TD><IMG SRC="[% image %]"></TD>
-        <TD><A HREF="[% url %]">[% title %]</A></TD>
-    </TR>
+    
+        [% IF image %]<IMG SRC="[% image %]" alt="[% title %]"></A><br />[% END %]
+        <A HREF="[% url %]">[% title %]            </A><br />
+<br />
+<hr>
+<br />

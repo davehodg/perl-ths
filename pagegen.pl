@@ -3,6 +3,7 @@
 
 use strict;
 use warnings;
+use open qw( :std :encoding(UTF-8) );
 
 use Text::CSV_XS qw(csv);
 use Template;
@@ -10,8 +11,12 @@ use Template;
 use Data::Dumper;
 use Carp;
 
+`rm html/*`;
+
 my $tt = Template->new({
-    INCLUDE_PATH => '/./tt',
+    INCLUDE_PATH => './tt',
+#    PRE_PROCESS  => 'header',
+#    POST_PROCESS => 'footer',
     #INTERPOLATE  => 1,
 }) || die "$Template::ERROR\n";
 
@@ -23,33 +28,50 @@ my $fout;
 
 my $headers = $csv->getline($fh);   
 while (my $row = $csv->getline ($fh)) {
-    if ($row->[0] ne '') {
-        # maybe say to fout here regardless
-        if (defined $fout) {
-            say $fout '</TABLE>';
-            close $fout;
+    # $row->[0] contains the file name
+    $lineup = $row->[0];
+    my $fname = 'html/' . $lineup . '.html';
+    open $fout, '>>', $fname 
+         || croak "Can't open $fname";
+
+    
+
+    {
+        my $url = $row->[5];
+        my $image;
+
+        if ($url =~ /youtube/) {
+            my @junk = split (/v=/, $url);
+            if (defined $junk[1]) {
+                $image = "https://i.ytimg.com/vi/" . $junk[1] . "/hqdefault.jpg";
+            }
+            #warn $image;
         }
-        $lineup = $row->[0];
-        warn 'html/' . $lineup . '.html'; 
-        my $fname = 'html/' . $lineup . '.html';
-        open $fout, '>', $fname 
-             || croak "Can't open";
-        warn $fout;
-        say $fout '<TABLE>';
-        warn "abled";
-    } else {
-        warn $row->[2];
+
+        # https://www.youtube.com/watch?v=boCYBqZgrEw
+        if ($url =~ /youtu.be/) {
+            my @junk = split (/\//, $url);
+            #warn Dumper(\@junk), $junk[3];
+            if (defined $junk[3]) {
+                $image = "https://i.ytimg.com/vi/" . $junk[3] . "/hqdefault.jpg";
+            }
+            #warn $image;
+            #exit ;
+        }
+        
         my $vars = {
             title => $row->[2],
             url   => $row->[5],
-            image => "",
-        };  
+            image => $image,
+        };
         my $out;
-        $tt->process('row.tt', $vars, \$out)
-            || croak $tt->error(), "\n";
+        $tt->process('row.tt', $vars, \$out) || croak $tt->error(), "\n";
+
         say $fout $out;
+        close ($fout);
     }
 }
 
+close $fh;
 
-sleep(30);
+
