@@ -1,6 +1,6 @@
     
-        [% IF image %]<IMG SRC="[% image %]" alt="[% title %]"></A><br />[% END %]
-        <A HREF="[% url %]">[% title %]            </A><br />
+        <A HREF="[% url %]">[% IF image %]<IMG SRC="[% image %]" alt="[% title %]"></A><br />[% END %]<br />
+        <A HREF="[% url %]">[% title %]            </A> ([% date %])<br />
 <br />
 <hr>
 <br />
