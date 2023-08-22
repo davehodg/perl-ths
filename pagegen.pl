@@ -60,10 +60,11 @@ while ( my $row = $csv->getline($fh) ) {
         }
 
         my $vars = {
-            title => $row->[2],
-            date  => $row->[3],
-            url   => $row->[5],
-            image => $image,
+            title    => $row->[2],
+            date     => $row->[3],
+            duration => $row->[4],
+            url      => $row->[5],
+            image    => $image,
         };
         my $out;
         $tt->process( 'row.tt', $vars, \$out ) || croak $tt->error(), "\n";

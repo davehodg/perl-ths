@@ -11,6 +11,6 @@ It only uses these CPAN modules:
     use Text::CSV_XS qw(csv);
     use Template;
 
-As always, patches welcome. For example we need to get the thumbnail of the ARTE video. Duration would be nice.
+As always, patches welcome. For example we need to get the thumbnail of the ARTE video.
 
-Some minor things to do to make perlcritic happy.
+Some minor things to do to make perlcritic happy need to be done.
