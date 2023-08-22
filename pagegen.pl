@@ -13,65 +13,65 @@ use Carp;
 
 `rm html/*`;
 
-my $tt = Template->new({
-    INCLUDE_PATH => './tt',
-#    PRE_PROCESS  => 'header',
-#    POST_PROCESS => 'footer',
-    #INTERPOLATE  => 1,
-}) || die "$Template::ERROR\n";
+my $tt = Template->new(
+    {
+        INCLUDE_PATH => './tt',
+    }
+) || die "$Template::ERROR\n";
 
-my $csv = Text::CSV_XS->new ({ binary => 1, auto_diag => 1 });
+my $csv = Text::CSV_XS->new( { binary => 1, auto_diag => 1 } );
 open my $fh, "<:encoding(utf8)", "deep.csv" or croak "deep.csv: $!";
 
-my $lineup; 
+my $lineup;
 my $fout;
 
-my $headers = $csv->getline($fh);   
-while (my $row = $csv->getline ($fh)) {
-    # $row->[0] contains the file name
+my $headers = $csv->getline($fh);
+while ( my $row = $csv->getline($fh) ) {
     $lineup = $row->[0];
     my $fname = 'html/' . $lineup . '.html';
-    open $fout, '>>', $fname 
-         || croak "Can't open $fname";
-
-    
+    open $fout, '>>', $fname
+      || croak "Can't open $fname";
 
     {
         my $url = $row->[5];
         my $image;
 
-        if ($url =~ /youtube/) {
-            my @junk = split (/v=/, $url);
-            if (defined $junk[1]) {
-                $image = "https://i.ytimg.com/vi/" . $junk[1] . "/hqdefault.jpg";
+        if ( $url =~ /youtube/x ) {
+            my @junk = split( /v=/, $url );
+            if ( defined $junk[1] ) {
+                $image =
+                  "https://i.ytimg.com/vi/" . $junk[1] . "/hqdefault.jpg";
             }
+
             #warn $image;
         }
 
-        # https://www.youtube.com/watch?v=boCYBqZgrEw
-        if ($url =~ /youtu.be/) {
-            my @junk = split (/\//, $url);
+        if ( $url =~ /youtu.be/x ) {
+            my @junk = split( /\//, $url );
+
             #warn Dumper(\@junk), $junk[3];
-            if (defined $junk[3]) {
-                $image = "https://i.ytimg.com/vi/" . $junk[3] . "/hqdefault.jpg";
+            if ( defined $junk[3] ) {
+                $image =
+                  "https://i.ytimg.com/vi/" . $junk[3] . "/hqdefault.jpg";
             }
+
             #warn $image;
             #exit ;
         }
-        
+
         my $vars = {
             title => $row->[2],
+            date  => $row->[3],
             url   => $row->[5],
             image => $image,
         };
         my $out;
-        $tt->process('row.tt', $vars, \$out) || croak $tt->error(), "\n";
+        $tt->process( 'row.tt', $vars, \$out ) || croak $tt->error(), "\n";
 
         say $fout $out;
-        close ($fout);
+        close($fout);
     }
 }
 
 close $fh;
-
 

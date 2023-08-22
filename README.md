@@ -6,10 +6,11 @@ The fields, not all used, are:
 
     Lineup,Members,Where,Date,Running Time,URL,URL2,URL3,Notes
 
-
 It only uses these CPAN modules:
 
     use Text::CSV_XS qw(csv);
     use Template;
 
 As always, patches welcome. For example we need to get the thumbnail of the ARTE video. Duration would be nice.
+
+Some minor things to do to make perlcritic happy.
