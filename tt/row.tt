@@ -1,10 +1,15 @@
     
 <<<<<<< HEAD
+<<<<<<< HEAD
         <A HREF="[% url %]">[% IF image %]<IMG SRC="[% image %]" alt="[% title %]"></A><br />[% END %]<br />
         <A HREF="[% url %]">[% title %]            </A> ([% date %] [% duration %])<br />
 <br />
 <hr>
 <br />
+=======
+        <IMG WIDTH=100 SRC="[% image %]">
+        <A HREF="[% url %]">[% title %]</A>
+>>>>>>> 6a83380 (Update to new Trond format)
 =======
         <IMG WIDTH=100 SRC="[% image %]">
         <A HREF="[% url %]">[% title %]</A>
