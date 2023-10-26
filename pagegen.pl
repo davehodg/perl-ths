@@ -80,7 +80,7 @@ while ( my $row = $csv->getline($fh) ) {
         $row->[2] =~ s/\-\>//g;
 
         #$image =~ s/Plzeň/Boing!/;
-        warn $row->[2];
+        #warn $row->[2];
         my $vars = {
             title    => escape_html( $row->[2] ),
             date     => $row->[3],
